@@ -5,9 +5,7 @@ import java.awt.AlphaComposite;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -115,7 +113,6 @@ public class Game extends Canvas implements Runnable{
 	
 	protected static BufferedImage background;
 	protected static BufferedImage ground;
-	protected Font chillerFont;
 	
 	Random rand = new Random();
 	
@@ -210,25 +207,6 @@ public class Game extends Canvas implements Runnable{
 		p4 = new PlayerProgressBar();
 		p3.adjustY(15);
 		p4.adjustY(30);
-		
-		// New Font
-		InputStream fontFile;
-		try {
-			fontFile = new BufferedInputStream(new FileInputStream("fontRes/CHILLER.TTF"));
-			chillerFont = Font.createFont(Font.TRUETYPE_FONT,fontFile);
-			chillerFont = chillerFont.deriveFont(Font.ITALIC, 45);
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			ge.registerFont(chillerFont);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (FontFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-				
-		// End New Font
-		
 	}
 	
 	public DataInputStream getInputStream(){
@@ -332,17 +310,14 @@ public class Game extends Canvas implements Runnable{
 		g.setComposite(ac);
 		g.fillRect(0, 10, WIDTH * SCALE, 80);
 		g.setPaint(Color.red);
-		g.setFont(chillerFont);
+		g.setFont(new Font("Chiller", Font.ITALIC, 45));
 		
 		g.drawString(drawnString, 80, 60);
 		g.drawString(Integer.toString(score), 100, 150);
 		
 		g.dispose();
 		g = (Graphics2D) buffStrat.getDrawGraphics();
-		
-		
-		
-		g.setFont(chillerFont);
+		g.setFont(new Font("Chiller", Font.ITALIC, 45));
 		g.setPaint(Color.white);
 		g.drawString(updateString, 80, 60);
 
