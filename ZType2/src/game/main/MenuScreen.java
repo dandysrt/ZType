@@ -5,30 +5,35 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class MenuScreen extends Canvas implements Runnable {
-	
-	private static final long serialVersionUID = 1L;
+public class MenuScreen extends Canvas implements Runnable{
+
 	public static int WIDTH, HEIGHT, SCALE, TILESIZE;
 	public static boolean running = false;
 	public static boolean pause = false;
 	public static boolean endGame = false;
 	public static int playerCount = 0;
+	Font chillerFont;
+	public static BufferedImage background;
 
-	private JPanel menuPane;
-	
-	protected static BufferedImage background;
 	protected static String drawnString = "Z-Type";
 	public Thread menuThread;
 	
@@ -44,29 +49,59 @@ public class MenuScreen extends Canvas implements Runnable {
 		try{
 			background = ImageIO.read(new File("./imgRes/bground.jpg"));
 		}catch(Exception e){}
-		menuPane = new JPanel();
-		menuPane.setLayout(new GridLayout(1,1));
-		menuPane.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-		menuPane.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-		menuPane.setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-		
-		final JButton playButton = new JButton("Play");
-		menuPane.add(playButton);
-		playButton.addActionListener(new ActionListener(){
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				GameManager.contentPane.setLayout(new CardLayout());
-				GameManager.menu.setVisible(false);
-				GameManager.gamePane.add(GameManager.game);		
-				GameManager.gamePane.add(GameManager.typePane);
-				GameManager.gamePane.setVisible(true);
-				GameManager.game.start();
-			}
+		// New Font
+		InputStream fontFile;
+		try {
+			fontFile = new BufferedInputStream(new FileInputStream("fontRes/CHILLER.TTF"));
+			chillerFont = Font.createFont(Font.TRUETYPE_FONT,fontFile);
+			chillerFont = chillerFont.deriveFont(Font.ITALIC, 100);
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			ge.registerFont(chillerFont);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		// End New Font
 			
-		});
-		
-			
+	}
+	public synchronized void start(){
+		if(running){
+			return;
+		}
+		running = true;
+		menuThread = new Thread(this);
+		menuThread.start();
+	}
+	public synchronized void stop()
+	{
+		if (!running)
+		{
+			return;
+		}
+		running = false;
+		try
+		{
+			menuThread.join();
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public synchronized void pause(){
+		if(!pause){
+			menuThread.notify();
+			return;
+		}
+		try{
+			menuThread.sleep(60000000);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public void render(){
@@ -80,31 +115,21 @@ public class MenuScreen extends Canvas implements Runnable {
 		g.fillRect(0, 0, WIDTH * SCALE,  HEIGHT * SCALE);
 		g.drawImage(background,  0,  0,  WIDTH * SCALE,  HEIGHT * SCALE, null);
 		g.setPaint(Color.red);
-		g.setFont(new Font("Chiller", Font.ITALIC, 100));
-		
+		g.setFont(chillerFont);
 		g.drawString(drawnString, 500, 200);
-		
-		
 		
 		g.dispose();
 		buffStrat.show();
 	}
-	
-	public synchronized void start(){
-		if(running){
-			return;
-		}
-		running = true;
-		menuThread = new Thread(this);
-		menuThread.start();
-	}
-	
+
 	@Override
 	public void run() {
 		init();
 		while(running){
 			render();
 		}
+		
 	}
+	
 
 }

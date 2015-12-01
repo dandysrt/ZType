@@ -1,35 +1,44 @@
 package game.main;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import javax.swing.Timer;
 
-public class GameManager extends JFrame{
+public class GameManager extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 
 	public static final int WIDTH = 600, HEIGHT = 300, SCALE = 2, TILESIZE = 100;
 	
-	protected static JPanel contentPane;
+	protected JPanel contentPane;
+	public static JTextArea doneScreen;
 	protected static JPanel gamePane;
-	protected static JPanel typePane;
-	private JTextField typed;
+	protected static JPanel menuPane;
+	public static JPanel donePane;
 	protected static Game game;
 	protected static MenuScreen menu;
+	private JButton playButton;
+	private JButton restartButton;
+	private BufferedImage play;
+	private BufferedImage mousedOver;
+	private boolean start = true;
+	
+	public static Timer timer;
 
 	public GameManager(){
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -37,55 +46,116 @@ public class GameManager extends JFrame{
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
-		typed = new JTextField();
-		//typed.setSize(WIDTH * SCALE, 80);
 		contentPane = new JPanel();
-		//contentPane.setLayout(new CardLayout());
-		//contentPane.setLayout(new CardLayout(400,250));
-		contentPane.setLayout(new BorderLayout());
-		typePane = new JPanel();
-		typePane.setLayout(new GridLayout(3,1));
-		typePane.add(Box.createHorizontalStrut(80));
-		typePane.add(Box.createHorizontalStrut(80));
-		typePane.add(typed);
-		typePane.setVisible(true);
-		
+		contentPane.setLayout(new CardLayout());	
 		setContentPane(contentPane);
-		gamePane = new JPanel();
-		gamePane.setLayout(null);
-		gamePane.setVisible(false);
-		gamePane.setVisible(true);
-		contentPane.add(gamePane);
-		contentPane.setVisible(true);
-
-		this.addMouseListener(new MouseManager());
 		
-		/*menu = new MenuScreen(WIDTH, HEIGHT, SCALE, TILESIZE);
-		menu.setPreferredSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-		menu.setMaximumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-		menu.setMinimumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-		menu.setBounds(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
-		//menu.start();
-		//menu.revalidate();
-		//menu.repaint();
-		//gamePane.add(menu);
+		gamePane = new JPanel();
+		contentPane.add(gamePane);
+		gamePane.setVisible(false);
+		gamePane.setLayout(null);
+		gamePane.setBounds(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
+		
+		menuPane = new JPanel();
+		contentPane.add(menuPane);
+		menuPane.setVisible(true);
+		menuPane.setLayout(null);
+		menuPane.setBounds(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
+		
+		try{
+		play = ImageIO.read(new File("./imgRes/playButton.png"));
+		mousedOver = ImageIO.read(new File("./imgRes/mouseOver.png"));
+		}catch(IOException e){
+		}
+		playButton = new JButton("Play");
+		playButton.setIcon(new ImageIcon(play));
+		menuPane.add(playButton);
+		playButton.setVisible(true);
+		playButton.setBorderPainted(false);
+		playButton.setBounds(505, 300, 190, 50);
+		playButton.addActionListener(this);
+		playButton.addMouseListener(new MouseAdapter(){
+			
+			public void mouseEntered(MouseEvent arg0){
+				playButton.setIcon(new ImageIcon(mousedOver));
+			}
+			
+			public void mouseExited(MouseEvent arg0){
+
+				playButton.setIcon(new ImageIcon(play));
+			}
+		});
+		
+		
+		donePane = new JPanel();
+		gamePane.add(donePane);
+		donePane.setVisible(false);
+		donePane.setLayout(null);
+		donePane.setBounds(450,200,300,200);
+		donePane.setBackground(Color.BLACK);
+		doneScreen = new JTextArea();
+		donePane.add(doneScreen);
+		doneScreen.setBounds(0, 0, 300, 149);
+		doneScreen.setBackground(Color.BLACK);
+		doneScreen.setEditable(false);
+		
+		restartButton = new JButton("RESTART");
+		donePane.add(restartButton);
+		restartButton.setBounds(100,150,100,30);
+		restartButton.addActionListener(this);
+		
+		
+		
+		timer = new Timer(5, this);
+		timer.start();
+		
+	}
 	
-		//contentPane.add(menu, BorderLayout.NORTH);
-*/		
-		game = new Game(WIDTH, HEIGHT, SCALE, TILESIZE);
-		game.setPreferredSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-		game.setMaximumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-		game.setMinimumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
-		game.setBounds(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
-		gamePane.add(game);
-		gamePane.add(typePane);
-		game.start();
+
+	@Override
+	public void actionPerformed(ActionEvent evt) {
+		
+		Object action = evt.getSource();
+		
+		if(start){
+			timer.stop();
+			menu = new MenuScreen(WIDTH, HEIGHT, SCALE, TILESIZE);
+			menu.setPreferredSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
+			menu.setMaximumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
+			menu.setMinimumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
+			menu.setBounds(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+			menuPane.add(menu);
+			menu.start();
+			start = false;
+		}
+		
+		if(action == playButton){
+			gamePane.setVisible(true);
+			donePane.setVisible(false);
+			menuPane.setVisible(false);
+			menu.stop();
+			game = new Game(WIDTH, HEIGHT, SCALE, TILESIZE);
+			game.setPreferredSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
+			game.setMaximumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
+			game.setMinimumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
+			game.setBounds(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+			gamePane.add(game);
+			game.start();
+		}
+		
+		if(action == restartButton){
+			donePane.setVisible(false);
+			gamePane.setVisible(false);
+			menu.start();
+			menuPane.setVisible(true);
+			Game.reset();
+			gamePane.remove(game);
+		}
 	}
 	
 	public static void main(String[] args){
 		GameManager gM = new GameManager();
 		@SuppressWarnings("unused")
-		//Thread managerThread = new Thread(menu);
 		Thread managerThread = new Thread(game);
 		gM.setVisible(true);
 		

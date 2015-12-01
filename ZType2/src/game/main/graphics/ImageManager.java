@@ -12,6 +12,7 @@ public class ImageManager
 	public ArrayList<BufferedImage> plyr = new ArrayList<BufferedImage>();
 	public Animator player = new Animator(plyr);
 	public ArrayList<BufferedImage> undead = new ArrayList<BufferedImage>();
+	public Animator deadRise = new Animator(undead);
 	public ArrayList<BufferedImage> zomB = new ArrayList<BufferedImage>();
 	public Animator zombie = new Animator(zomB);
 	

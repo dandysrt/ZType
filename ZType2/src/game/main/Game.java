@@ -39,6 +39,7 @@ public class Game extends Canvas implements Runnable{
 	public static int WIDTH, HEIGHT, SCALE, TILESIZE;
 	public static boolean running = false;
 	public static boolean pause = false;
+	public static boolean complete = false;
 	public static boolean endGame = false;
 	
 	public static int wordCount = 0;
@@ -52,7 +53,7 @@ public class Game extends Canvas implements Runnable{
 	protected BufferedImage undeadSprite;
 	protected BufferedImage zombieSprite;
 	protected static ImageManager eIM;
-	protected static ImageManager uIM;
+	public static ImageManager uIM;
 	protected static ImageManager zIM;
 	
 	protected static boolean playerStart = false;
@@ -78,7 +79,8 @@ public class Game extends Canvas implements Runnable{
 	
 	private String foreg = "./imgRes/foreground.png";
 	
-
+	protected Thread lThread;
+	
 	private static String pangramList(int x){
 		String[] pList = {
 				"Ebenezer unexpectedly bagged two tranquil aardvarks with his jiffy vacuum cleaner.",
@@ -116,8 +118,8 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	protected static BufferedImage background;
-	protected static BufferedImage ground;
-	protected Font chillerFont;
+	private static BufferedImage ground;
+	public static Font chillerFont;
 	
 	Random rand = new Random();
 	
@@ -125,11 +127,7 @@ public class Game extends Canvas implements Runnable{
 	private DataInputStream input;
 	private static DataOutputStream output;
 	private Socket connection;
-	int score1 = 0, score2 = 0, score3 = 0, score4 = 0;
-	int lastScore1 = score1;
-	int lastScore2 = score2;
-	int lastScore3 = score3;
-	int lastScore4 = score4;
+
 	private static int playerId;
 	static protected int progress[];
 	static protected int scores[];
@@ -178,6 +176,7 @@ public class Game extends Canvas implements Runnable{
 		
 		eIM.player.start();
 		zIM.zombie.start();
+		uIM.deadRise.start();
 		
 		try{
 		background = ImageIO.read(new File("./imgRes/bground.jpg"));
@@ -187,8 +186,8 @@ public class Game extends Canvas implements Runnable{
 		fground = new ArrayList<Background>();
 		fground.add(new Background(0, 15, foreg));
 		fground.add(new Background(3000, 15, foreg));
-		//fground.add(new Background(1500, 15, foreg));
-		//fground.add(new Background(4500, 15, foreg));
+		fground.add(new Background(1500, 15, foreg));
+		fground.add(new Background(4500, 15, foreg));
 		
 		//client code
 		try {
@@ -201,8 +200,8 @@ public class Game extends Canvas implements Runnable{
 		     e.printStackTrace();         
 		}
 		ListeningThread listeningThread = new ListeningThread(this);
-		Thread thread = new Thread(listeningThread);
-		thread.start();
+		lThread = new Thread(listeningThread);
+		lThread.start();
 		//end client code
 
 		this.addKeyListener(new KeyManager());
@@ -273,15 +272,10 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public synchronized void pause(){
-		if(!pause){
-			gameThread.notify();
+		if(pause){
 			return;
 		}
-		try{
-			gameThread.sleep(60000000);
-		}catch(InterruptedException e){
-			e.printStackTrace();
-		}
+		
 	}
 	
 	/**
@@ -320,10 +314,10 @@ public class Game extends Canvas implements Runnable{
 			zIM.zombie.update(System.currentTimeMillis());
 			Render.renderZombies(g, zombies);
 		}
-/*		if(uIM.zombie != null){
+		if(uIM.zombie != null){
 			uIM.zombie.update(System.currentTimeMillis());
 			Render.renderZombies(g, zombies);
-		}*/
+		}
 		
 		if(fground != null){
 			Render.renderBackground(g, fground);
@@ -408,10 +402,11 @@ public class Game extends Canvas implements Runnable{
 		sendScore();
 	}
 	
-	private static void reset(){
+	public static void reset(){
 		setPangram();
 		wordInc = 0;
 		charInc = 0;
+		score = 0;
 		updateString = "";
 	}
 
@@ -465,10 +460,13 @@ public class Game extends Canvas implements Runnable{
 		for(int i = 0; i < playerCount; i++){
 			if(scores[i] >= (lastscores[i]) + 100 && lastscores[i] <= 5000){
 				lastscores[i] = scores[i];
-				progress[i] += 2;
+				if(progress[i] < 5000)
+					progress[i] = scores[i]/50;
+				else
+					progress[i] = 5000;
 			}else if((scores[i] + 100) <= lastscores[i] && scores[i] > 0){
 				lastscores[i] = scores[i];
-				progress[i] -= 2;
+				progress[i] = scores[i]/50;
 			}
 		}
 	}
@@ -536,22 +534,33 @@ public class Game extends Canvas implements Runnable{
 			lastTime = now;
 			if(score % 300 == 0 && score != 0 && zombies.size() < 3){
 				
-				if(count % 5 == 0){
+				if(count % 10 == 0){
 					zombies.add(new Zombie(zIM));
+					count += 5;
 				}
 			}
 			if(delta >= 1){
 				tick();
 				render();
 				delta--;
+
+				count++;
 				if(playerStart){
-					count++;
 					phi+= 0.00025;
 				}
 			}
 			wpm = wordCount /phi;
 			if(pause){
 				pause();
+			}
+			if(complete){
+				int wordsPM = (int) wpm;
+				zombies.clear();
+				GameManager.doneScreen.setFont(chillerFont);
+				
+				GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
+				GameManager.donePane.setVisible(true);
+				break;
 			}
 			
 		}

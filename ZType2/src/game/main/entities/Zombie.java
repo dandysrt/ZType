@@ -29,6 +29,8 @@ public class Zombie {
 		 int zSpeed = 0;
 			if(Game.wpm > 49 && Game.wpm < 60){
 				zSpeed = 0;
+				if(zombieTouch())
+					zSpeed = -1;
 			}
 			else if(Game.wpm >= 60 ){
 				if(Game.plyrSpeed > 60)

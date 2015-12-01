@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+//import game.main.Game;
 import game.main.entities.Zombie;
 
 public class Render 
@@ -18,7 +19,7 @@ public class Render
 		}
 	}
 	
-	public static void updateBackground(ArrayList bgList)
+	public static void updateBackground(ArrayList<Background> bgList)
 	{
 		for (int i = 0; i < bgList.size(); i++) 
 		{
@@ -47,6 +48,7 @@ public class Render
 		for(int i = 0; i < zList.size(); i++){
 			Zombie zombies = zList.get(i);
 			g.drawImage(zombies.getSprite(), zombies.getX(), zombies.getY(), 65, 65, null);
+
 		}
 	}
 	

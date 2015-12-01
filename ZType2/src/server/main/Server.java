@@ -68,27 +68,29 @@ public class Server extends JFrame{
 		}
 	}
 	
-	public void run() throws IOException{
+	public void run(){
 		while(true){
-			socket = serverSocket.accept();
-			if(playerCount < PLAYER_LIMIT){
-				playerCount++;
-				printMessage("Client Connected.");
-				printMessage("Number of players: " + playerCount);
-				output = new DataOutputStream(socket.getOutputStream());
-				input = new DataInputStream(socket.getInputStream()); // Not needed in current implementation because server does not issue commands
-				for(int i = 0; i < players.length; i++){
-					if(players[i] == null || players[i].status == 1){
-						players[i] = new  PlayerThread(i,input,output,this);
-						players[i].start();
-						output.writeInt(i); // Sends id to player based on array location
-						output.writeInt(playerCount);
-						break;
+			try{
+				socket = serverSocket.accept();
+				if(playerCount < PLAYER_LIMIT){
+					playerCount++;
+					printMessage("Client Connected.");
+					printMessage("Number of players: " + playerCount);
+					output = new DataOutputStream(socket.getOutputStream());
+					input = new DataInputStream(socket.getInputStream()); // Not needed in current implementation because server does not issue commands
+					for(int i = 0; i < players.length; i++){
+						if(players[i] == null || players[i].status == 1){
+							players[i] = new  PlayerThread(i,input,output,this);
+							players[i].start();
+							output.writeInt(i); // Sends id to player based on array location
+							output.writeInt(playerCount);
+							break;
+						}
 					}
+				}else{
+					socket.close();
 				}
-			}else{
-				socket.close();
-			}
+			}catch(IOException e){}
 		}
 	}
 	
@@ -126,12 +128,7 @@ public class Server extends JFrame{
 				System.exit(0);
 			}
 		});
-
-		try{
-			server.run();
-		}catch(IOException e){
-			
-		}
+		server.run();
 	}
 
 }

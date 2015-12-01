@@ -1,5 +1,8 @@
 package game.main.graphics;
 
+import game.main.Game;
+import game.main.GameManager;
+
 public class HealthBar
 {
 	
@@ -32,6 +35,15 @@ public class HealthBar
 		if(count > 500){
 			w += val;
 			count = 0;
+		}
+		if(w <= 0){
+			
+			Game.zombies.clear();
+			Game.reset();
+			GameManager.doneScreen.setFont(Game.chillerFont);
+			GameManager.doneScreen.append("    You Died. \n    Type faster!");
+			GameManager.donePane.setVisible(true);
+			
 		}
 	}
 

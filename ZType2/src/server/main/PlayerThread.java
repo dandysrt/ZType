@@ -19,6 +19,7 @@ public class PlayerThread extends Thread{
 		this.playerId = playerId;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void run() {
 		while(true){
 			try{
@@ -26,11 +27,17 @@ public class PlayerThread extends Thread{
 				String message = input.readUTF();
 				server.sendPlayerData(playerId,message);
 				server.printMessage(message);
-			}catch(IOException e){
+			}catch(IOException|NullPointerException e){
 				output = null;
 				input = null;
 				status = 1;
-				server.updatePlayerCount(-1);
+				Server.updatePlayerCount(-1);
+				try {
+					this.join();
+				} catch (InterruptedException e1) {
+					this.stop();
+				}
+				
 			}
 		}
 		
