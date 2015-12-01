@@ -325,7 +325,7 @@ public class Game extends Canvas implements Runnable{
 		zIM.zombie.setSpeed(200);
 		
 		
-		
+		updateProgress(playerId);
 		Render.renderHealth(g);
 		switch(playerCount){
 		case 4:

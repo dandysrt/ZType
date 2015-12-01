@@ -28,7 +28,6 @@ public class ListeningThread implements Runnable {
 				int pCount = Integer.parseInt(info[3]);
 				System.out.println("<" + game.getPlayerId() + ">" + "Player:" + player + "Score:" + score);
 				game.updateScores(player, score);
-				game.updateProgress(player);
 				game.updatePlayerCount(pCount);
 			} catch (IOException e) {
 				e.printStackTrace();
