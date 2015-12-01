@@ -53,6 +53,8 @@ public class Game extends Canvas implements Runnable{
 	protected static ImageManager uIM;
 	protected static ImageManager zIM;
 	
+	protected static boolean playerStart = false;
+	
 	//player entity
 	private static Player player;
 	
@@ -515,10 +517,12 @@ public class Game extends Canvas implements Runnable{
 			}
 			if(delta >= 1){
 				tick();
-				count++;
 				render();
 				delta--;
-				phi+= 0.00025;
+				if(playerStart){
+					count++;
+					phi+= 0.00025;
+				}
 			}
 			wpm = wordCount /phi;
 			if(pause){

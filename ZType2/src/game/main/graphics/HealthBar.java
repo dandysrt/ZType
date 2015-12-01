@@ -5,6 +5,7 @@ public class HealthBar
 	
 	private static int x = 500, y = 100;
 	private static int w = 100, h = 20;
+	private static int count = 0;
 	
 	public HealthBar(){
 		
@@ -18,7 +19,7 @@ public class HealthBar
 		return y;
 	}
 	
-	public int getW(){
+	public static int getW(){
 		return w;
 	}
 	
@@ -27,7 +28,11 @@ public class HealthBar
 	}
 	
 	public static void updateW(int val){
-		w += val;
+		count++;
+		if(count > 500){
+			w += val;
+			count = 0;
+		}
 	}
 
 }

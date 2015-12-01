@@ -39,7 +39,7 @@ public class KeyManager implements KeyListener {
 				
 				Game.wordCount++;
 		}
-		
+		Game.playerStart = true;
 		Game.compareString(e);
 		if(Game.score >= 5000)
 			lastPangram = true;

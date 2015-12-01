@@ -39,7 +39,8 @@ public class Render
 	}
 	
 	public static void updateHealth(){
-		HealthBar.updateW(-5);
+		if(HealthBar.getW() > 0)
+			HealthBar.updateW(-5);
 	}
 	
 	public static void renderZombies(Graphics2D g, ArrayList<Zombie> zList){
