@@ -548,7 +548,7 @@ public class Game extends Canvas implements Runnable{
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			if(score % 200 == 0 && score != 0 && undead.size() < 1 && zombies.size() < 2){
+			if(score % 200 == 0 && score != 0 && undead.size() < 1 && zombies.size() < 3){
 				undead.add(new Undead());
 			}
 			if(delta >= 1){
