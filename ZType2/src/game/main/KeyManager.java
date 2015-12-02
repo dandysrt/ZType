@@ -11,8 +11,8 @@ public class KeyManager implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
 			if(lastPangram){
-				Game.sendScore(true);
-				Game.complete = true;
+				Game.sendScore(1);
+//				Game.complete = true;
 				return;
 			}
 			Game.setPangram();

@@ -124,7 +124,7 @@ public class Game extends Canvas implements Runnable{
 	Random rand = new Random();
 	
 	//client variables start
-	private DataInputStream input;
+	private static DataInputStream input;
 	private static DataOutputStream output;
 	private Socket connection;
 
@@ -132,6 +132,7 @@ public class Game extends Canvas implements Runnable{
 	static protected int progress[];
 	static protected int scores[];
 	static protected int lastscores[];
+	public int finished = 0;
 	//end client variables
 
 	public Thread gameThread;
@@ -399,7 +400,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void setPangram(){
 		drawnString = getPangram();
-		sendScore(false);
+		sendScore(0);
 	}
 	
 	public static void reset(){
@@ -505,26 +506,27 @@ public class Game extends Canvas implements Runnable{
 		playerCount = pCount;
 	}
 
-	public static void sendScore(boolean done){		
+	public static void sendScore(int state){		
 		
 		try{
-			if(!done){
+			switch(state){
+			case 0:
 				output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
-			}else{
+				break;
+			case 1:
 				output.writeUTF(getPlayerId() + ";" + "done" + ";" +  score);
+				break;
+			case 2:
+				output.writeUTF(getPlayerId() + ";" + "exit" + ";" +  score);
+				String finalScores = input.readUTF();
+				//TODO Print Scores
+				complete = true;
+				
 			}
 			
 		}catch(IOException e){
 			
 		}
-	}
-	
-	public void getRestOfScores(){
-		int i  = playerCount;
-		while(i>0){
-			
-		}
-		
 	}
 	
 	//END client code

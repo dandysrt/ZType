@@ -21,6 +21,7 @@ public class PlayerThread extends Thread{
 	
 	@SuppressWarnings("deprecation")
 	public void run() {
+		IOException e = new IOException("Done");
 		while(true){
 			try{
 				server.printMessage("Player " + playerId + " is listening...");
@@ -28,16 +29,26 @@ public class PlayerThread extends Thread{
 				String[] info = message.split(";");
 				switch(info[1]){
 				case "done": // Used to except first player
-					server.sendPlayerData(playerId, message);
-					IOException e = new IOException("Done");
+					server.sendPlayerData(playerId, info[0] + ";lose;" + info[2]);
+					server.scores.add(message);
+					wait();
 					throw e;
+				case "exit":
+					server.scores.add(message);
+					if(server.scores.size() < server.getPlayerCount()){
+						wait();
+					}else{
+						notifyAll();
+						server.sendPlayerData(5, "scores");
+						throw e;
+					}
 				default:
 					server.sendPlayerData(playerId,message);
 					server.printMessage(message);	
 					break;
 				}
 				
-			}catch(IOException|NullPointerException e){
+			}catch(IOException|NullPointerException ioe){
 				output = null;
 				input = null;
 				status = 1;
@@ -47,6 +58,8 @@ public class PlayerThread extends Thread{
 				} catch (InterruptedException e1) {
 					this.stop();
 				}
+				
+			}catch(InterruptedException ie){
 				
 			}
 		}
