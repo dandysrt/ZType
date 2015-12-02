@@ -31,15 +31,20 @@ public class PlayerThread extends Thread{
 				case "done": // Used to except first player
 					server.sendPlayerData(playerId, info[0] + ";lose;" + info[2]);
 					server.scores.add(message);
-					wait();
+					synchronized(this){
+			            wait();
+			        }
 					throw e;
 				case "exit":
 					server.scores.add(message);
 					if(server.scores.size() < server.getPlayerCount()){
 						wait();
 					}else{
-						notifyAll();
-						server.sendPlayerData(5, "scores");
+						synchronized(this){
+				            notifyAll();
+				        }
+						server.sendPlayerData(5, "5;scores;5;5");
+						server.printMessage("PlayerThread " + playerId + " done!");
 						throw e;
 					}
 				default:

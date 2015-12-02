@@ -518,9 +518,7 @@ public class Game extends Canvas implements Runnable{
 				break;
 			case 2:
 				output.writeUTF(getPlayerId() + ";" + "exit" + ";" +  score);
-				String finalScores = input.readUTF();
-				//TODO Print Scores
-				complete = true;
+				
 				
 			}
 			

@@ -30,8 +30,13 @@ public class ListeningThread implements Runnable {
 				switch(message){
 				case "lose":
 					game.sendScore(2);
-					String s = input.readUTF();
+//					String s = input.readUTF();
+//					game.complete = true;
+					break;
+				case "scores":
+					System.out.println(message);
 					game.complete = true;
+					break;
 				default:
 					game.updateScores(player, score);
 					game.updatePlayerCount(pCount);
