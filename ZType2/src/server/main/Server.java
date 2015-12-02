@@ -3,6 +3,7 @@ package server.main;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,6 +30,8 @@ public class Server extends JFrame{
 	
 	final static int PLAYER_LIMIT = 4;
 	private static int playerCount = 0;
+	
+	protected ArrayList<String> scores = new ArrayList<String>();
 	
 	
 	Server(){
@@ -119,6 +122,32 @@ public class Server extends JFrame{
 	
 	public static void updatePlayerCount(int n){
 		playerCount = playerCount + n;
+	}
+	public void finished(String message){
+		scores.add(message);
+		switch(scores.size() - 1){
+		case 0:
+			message = "First;";
+			break;
+		case 1:
+			message = "Second;";
+			break;
+		case 2:
+			message = "Third;";
+			break;
+		case 3:
+			message = "Last;";
+			break;
+		}
+		for(int i = 0; i < scores.size();i++){
+			String[] s = scores.get(i).split(";");
+			message += s[0] + ";" + s[2] + ";";
+		}
+		try {
+			output.writeUTF(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {

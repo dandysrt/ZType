@@ -27,6 +27,10 @@ public class PlayerThread extends Thread{
 				String message = input.readUTF();
 				server.sendPlayerData(playerId,message);
 				server.printMessage(message);
+				if(message.split(";")[1].compareTo("done") == 0){
+					message = input.readUTF();
+					server.finished(message);
+				}
 			}catch(IOException|NullPointerException e){
 				output = null;
 				input = null;
