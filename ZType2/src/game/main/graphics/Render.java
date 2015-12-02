@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+
+import game.main.entities.Undead;
 //import game.main.Game;
 import game.main.entities.Zombie;
 
@@ -60,5 +62,19 @@ public class Render
 		}
 	}
 	
+	public static void renderUndead(Graphics2D g, ArrayList<Undead> uList){
+		for(int i = 0; i < uList.size(); i++){
+			Undead undead = uList.get(i);
+			g.drawImage(undead.getSprite(), undead.getX(), undead.getY(), 65, 65, null);
+		}
+	}
+	
+	public static void updateUndead(ArrayList<Undead> uList){
+		for(int i = 0; i< uList.size(); i++){
+			Undead undead = uList.get(i);
+			if(undead.isVisible())
+				undead.tick();
+		}
+	}
 
 }

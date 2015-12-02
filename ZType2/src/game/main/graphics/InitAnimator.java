@@ -3,18 +3,20 @@ package game.main.graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class Animator
-{
+public class InitAnimator {
 	private ArrayList<BufferedImage> frames;
 
 	public BufferedImage sprite;
+	public static boolean fullRun = false;
 	private volatile boolean running = false;
 	private long prevTime, speed;
-	private int frameAtPause, currentFrame;
+	private int frameAtPause, currentFrame = 0;
 
-	public Animator(ArrayList<BufferedImage> frames)
+	public InitAnimator(ArrayList<BufferedImage> frames)
 	{
 		this.frames = frames;
+		currentFrame = 0;
+		fullRun = false;
 	}
 
 	public void setSpeed(long speed)
@@ -34,8 +36,8 @@ public class Animator
 					sprite = frames.get(currentFrame);
 				} catch (IndexOutOfBoundsException e)
 				{
-					currentFrame = 0;
-					sprite = frames.get(currentFrame);
+					fullRun = true;
+					currentFrame = -1;
 				}
 				prevTime = time;
 			}
