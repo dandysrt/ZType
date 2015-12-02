@@ -25,8 +25,18 @@ public class PlayerThread extends Thread{
 			try{
 				server.printMessage("Player " + playerId + " is listening...");
 				String message = input.readUTF();
-				server.sendPlayerData(playerId,message);
-				server.printMessage(message);
+				String[] info = message.split(";");
+				switch(info[1]){
+				case "done": // Used to except first player
+					server.sendPlayerData(playerId, message);
+					IOException e = new IOException("Done");
+					throw e;
+				default:
+					server.sendPlayerData(playerId,message);
+					server.printMessage(message);	
+					break;
+				}
+				
 			}catch(IOException|NullPointerException e){
 				output = null;
 				input = null;

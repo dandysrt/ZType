@@ -399,7 +399,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void setPangram(){
 		drawnString = getPangram();
-		sendScore();
+		sendScore(false);
 	}
 	
 	public static void reset(){
@@ -505,13 +505,26 @@ public class Game extends Canvas implements Runnable{
 		playerCount = pCount;
 	}
 
-	public static void sendScore(){		
+	public static void sendScore(boolean done){		
 		
 		try{
-			output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
+			if(!done){
+				output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
+			}else{
+				output.writeUTF(getPlayerId() + ";" + "done" + ";" +  score);
+			}
+			
 		}catch(IOException e){
 			
 		}
+	}
+	
+	public void getRestOfScores(){
+		int i  = playerCount;
+		while(i>0){
+			
+		}
+		
 	}
 	
 	//END client code

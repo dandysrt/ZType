@@ -3,6 +3,7 @@ package server.main;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,6 +30,8 @@ public class Server extends JFrame{
 	
 	final static int PLAYER_LIMIT = 4;
 	private static int playerCount = 0;
+	
+	HashMap<Integer, String> scores = new HashMap<Integer,String>();
 	
 	
 	Server(){

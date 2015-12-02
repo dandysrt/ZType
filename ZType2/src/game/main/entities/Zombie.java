@@ -35,7 +35,7 @@ public class Zombie {
 			else if(Game.wpm >= 60 ){
 				if(Game.plyrSpeed > 60)
 					Game.plyrSpeed += 30;
-				zSpeed = -1;
+				zSpeed = -5;
 			}
 			else if(Game.wpm < 50 && x < Player.getX() - 20){
 				zSpeed = 1;
