@@ -544,17 +544,22 @@ public class Game extends Canvas implements Runnable{
 		double delta = 0;
 		double phi = 0;
 		running = true;
+		int timer = 0;
 		while(running){
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			if(score % 200 == 0 && score != 0 && undead.size() < 1 && zombies.size() < 3){
-				undead.add(new Undead());
+			if(score != 0 && undead.size() < 1 && zombies.size() < 3){
+				if((timer + (Math.random()*150)) > 350){
+					undead.add(new Undead());
+					timer = 0;
+				}
 			}
 			if(delta >= 1){
 				tick();
 				if(render)
 					render();
+				timer++;
 				delta--;
 				if(playerStart){
 					phi+= 0.00025;

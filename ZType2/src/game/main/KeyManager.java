@@ -19,7 +19,7 @@ public class KeyManager implements KeyListener {
 			Game.charInc = 0;
 			Game.updateString = "";
 			Game.wordCount++;
-			System.out.println((int) Game.wpm); 
+			//System.out.println((int) Game.wpm); 
 		}
 		if(e.getKeyCode() == KeyEvent.VK_SPACE){
 			
