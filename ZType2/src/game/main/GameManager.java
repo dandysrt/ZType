@@ -104,8 +104,6 @@ public class GameManager extends JFrame implements ActionListener{
 		restartButton.setBounds(100,150,100,30);
 		restartButton.addActionListener(this);
 		
-		
-		
 		timer = new Timer(5, this);
 		timer.start();
 		
@@ -144,10 +142,11 @@ public class GameManager extends JFrame implements ActionListener{
 		}
 		
 		if(action == restartButton){
+			game.stop();
+			menuPane.setVisible(true);
 			donePane.setVisible(false);
 			gamePane.setVisible(false);
 			menu.start();
-			menuPane.setVisible(true);
 			Game.reset();
 			gamePane.remove(game);
 		}

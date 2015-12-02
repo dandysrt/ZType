@@ -20,6 +20,7 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 
 import game.main.entities.Player;
+import game.main.entities.Undead;
 import game.main.entities.Zombie;
 import game.main.KeyManager;
 import game.main.client.ListeningThread;
@@ -54,7 +55,7 @@ public class Game extends Canvas implements Runnable{
 	protected BufferedImage zombieSprite;
 	protected static ImageManager eIM;
 	public static ImageManager uIM;
-	protected static ImageManager zIM;
+	public static ImageManager zIM;
 	
 	protected static boolean playerStart = false;
 	
@@ -72,10 +73,13 @@ public class Game extends Canvas implements Runnable{
 	public static String[] wordArray;
 	protected static int score = 0;
 	public static int plyrSpeed = 100;
+	protected static boolean render = true;
 	
 	public static ArrayList<Zombie> zombies;
+	public static ArrayList<Undead> undead;
 	
 	private static ArrayList<Background> fground;
+	private static ArrayList<Background> bground;
 	
 	private String foreg = "./imgRes/foreground.png";
 	
@@ -155,6 +159,7 @@ public class Game extends Canvas implements Runnable{
 		//end client code
 		
 		zombies = new ArrayList<Zombie>();
+		undead = new ArrayList<Undead>();
 	
 		
 		try {
@@ -184,14 +189,14 @@ public class Game extends Canvas implements Runnable{
 		}catch(Exception e){}
 		
 		fground = new ArrayList<Background>();
+		bground = new ArrayList<Background>();
 		fground.add(new Background(0, 15, foreg));
-		fground.add(new Background(3000, 15, foreg));
-		fground.add(new Background(1500, 15, foreg));
-		fground.add(new Background(4500, 15, foreg));
+		bground.add(new Background(3000, 15, foreg));
 		
 		//client code
 		try {
 		      connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
+		      //connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
 		      input = new DataInputStream(connection.getInputStream());
 		      output = new DataOutputStream(connection.getOutputStream());
 		      setPlayerId(input.readInt());
@@ -288,7 +293,11 @@ public class Game extends Canvas implements Runnable{
 	
 	public void tick(){
 		Render.updateBackground(fground);
+		Render.updateBackground(bground);
 		Render.updateZombies(zombies);
+		if(undead != null)
+			Render.updateUndead(undead);
+		
 	}
 	
 	public void render(){
@@ -305,6 +314,9 @@ public class Game extends Canvas implements Runnable{
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 		g.drawImage(background, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 		g.setPaint(Color.gray);
+		if(bground != null){
+			Render.renderBackground(g, bground);
+		}
 		if (eIM.player != null)
 		{
 			eIM.player.update(System.currentTimeMillis());
@@ -314,14 +326,15 @@ public class Game extends Canvas implements Runnable{
 			zIM.zombie.update(System.currentTimeMillis());
 			Render.renderZombies(g, zombies);
 		}
-		if(uIM.zombie != null){
-			uIM.zombie.update(System.currentTimeMillis());
-			Render.renderZombies(g, zombies);
+		if(uIM.deadRise != null){
+			uIM.deadRise.update(System.currentTimeMillis());
+			Render.renderUndead(g, undead);
 		}
 		
 		if(fground != null){
 			Render.renderBackground(g, fground);
 		}
+		
 		g.drawImage(ground, 0, 415, WIDTH * SCALE, HEIGHT, null);
 		float alpha = (float) 0.5; //draw half transparent
 		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,alpha);
@@ -344,6 +357,7 @@ public class Game extends Canvas implements Runnable{
 
 		eIM.player.setSpeed(plyrSpeed);
 		zIM.zombie.setSpeed(200);
+		uIM.deadRise.setSpeed(400);
 		
 		
 		updateProgress(playerId);
@@ -408,6 +422,9 @@ public class Game extends Canvas implements Runnable{
 		charInc = 0;
 		score = 0;
 		updateString = "";
+		complete = false;
+		playerStart = false;
+		KeyManager.lastPangram = false;
 	}
 
 	public static void compareString(KeyEvent e){
@@ -527,24 +544,18 @@ public class Game extends Canvas implements Runnable{
 		double delta = 0;
 		double phi = 0;
 		running = true;
-		int count = 0;
 		while(running){
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			if(score % 300 == 0 && score != 0 && zombies.size() < 3){
-				
-				if(count % 10 == 0){
-					zombies.add(new Zombie(zIM));
-					count += 5;
-				}
+			if(score % 200 == 0 && score != 0 && undead.size() < 1 && zombies.size() < 2){
+				undead.add(new Undead());
 			}
 			if(delta >= 1){
 				tick();
-				render();
+				if(render)
+					render();
 				delta--;
-
-				count++;
 				if(playerStart){
 					phi+= 0.00025;
 				}
@@ -560,10 +571,13 @@ public class Game extends Canvas implements Runnable{
 				
 				GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
 				GameManager.donePane.setVisible(true);
-				break;
+				//break;
+				complete = false;
 			}
 			
 		}
+		phi = 0.0;
+		wordCount = 0;
 		
 	}
 

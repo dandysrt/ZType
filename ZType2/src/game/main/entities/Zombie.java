@@ -14,8 +14,8 @@ public class Zombie {
 	
 	protected boolean visible = true;
 	
-	public Zombie(ImageManager iM){
-		randX();
+	public Zombie(ImageManager iM, int xVal){
+		x = xVal;
 		this.iM = iM;
 	}
 	
@@ -34,7 +34,7 @@ public class Zombie {
 			}
 			else if(Game.wpm >= 60 ){
 				if(Game.plyrSpeed > 60)
-					Game.plyrSpeed += 30;
+					Game.plyrSpeed += 10;
 				zSpeed = -1;
 			}
 			else if(Game.wpm < 50 && x < Player.getX() - 20){
@@ -42,7 +42,7 @@ public class Zombie {
 			}
 		x += zSpeed;
 		if(x < -100){
-			Game.zombies.remove(0);
+			Game.zombies.clear();
 		}
 		
 		if(zombieTouch())
@@ -64,7 +64,7 @@ public class Zombie {
 	}
 
 	public boolean zombieTouch(){
-		int extreme = x + 55;
+		int extreme = x + 57;
 			
 		if(extreme > Player.getX())
 			return true;
