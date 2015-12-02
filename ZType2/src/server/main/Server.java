@@ -125,6 +125,26 @@ public class Server extends JFrame{
 		playerCount = playerCount + n;
 	}
 	
+	public void sendFinal(){
+		for(int i = 0; i < scores.size();i++){
+			String[] s = scores.get(i).split(";");
+			sendPlayerData(Integer.parseInt(s[0]), scores.get(i));
+		}
+		sendPlayerData(5, "5;exit;5");
+	}
+	
+//	public void sort(){
+//		for(String score : scores){
+//			String[] info = score.split(";");
+//			for(String score2 : scores){
+//				String[] info2 = score.split(";");	
+//				if(Integer.parseInt(info[2]) < Integer.parseInt(info2[2])){
+//					
+//				}
+//			}
+//		}
+//	}
+	
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.addWindowListener(new WindowAdapter(){

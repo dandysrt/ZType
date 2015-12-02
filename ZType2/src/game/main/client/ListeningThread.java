@@ -34,7 +34,10 @@ public class ListeningThread implements Runnable {
 //					game.complete = true;
 					break;
 				case "scores":
+					game.updateScores(player, score);
 					System.out.println(message);
+					break;
+				case "exit":
 					game.complete = true;
 					break;
 				default:
