@@ -47,8 +47,9 @@ public class Zombie {
 			Game.zombies.clear();
 		}
 		
-		if(zombieTouch())
+		if(zombieTouch()){
 			Render.updateHealth();
+		}
 	}
 	
 	public Rectangle getBounds(){

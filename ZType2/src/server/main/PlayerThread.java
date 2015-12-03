@@ -20,7 +20,7 @@ public class PlayerThread extends Thread{
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void run() {
+	public synchronized void run() {
 		while(true){
 			try{
 				server.printMessage("Player " + playerId + " is listening...");

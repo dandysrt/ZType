@@ -38,6 +38,7 @@ public class HealthBar
 	public static void updateW(int val){
 		if(hittable){
 			w += val;
+			Game.adjustScore(-20);
 			hittable = false;
 		}
 		count++;

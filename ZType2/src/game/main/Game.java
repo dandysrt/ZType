@@ -58,7 +58,7 @@ public class Game extends Canvas implements Runnable{
 	public static ImageManager uIM;
 	public static ImageManager zIM;
 	
-	protected static boolean playerStart = false;
+	protected static volatile boolean playerStart = false;
 	
 	//player entity
 	private static Player player;
@@ -293,7 +293,7 @@ public class Game extends Canvas implements Runnable{
 	 * Increment or decrement score
 	 * @param value set as negative to decrement, positive to increment
 	 */
-	public static void setScore(int value){
+	public static void adjustScore(int value){
 		score = score + value;
 	}
 	
@@ -430,6 +430,7 @@ public class Game extends Canvas implements Runnable{
 		updateString = "";
 		complete = false;
 		playerStart = false;
+		plyrSpeed = 100;
 		KeyManager.lastPangram = false;
 		HealthBar.hittable = true;
 	}
@@ -446,11 +447,11 @@ public class Game extends Canvas implements Runnable{
 				if(e.getKeyChar() == tempArray[charInc]){
 					tempTyped[charInc] = tempArray[charInc];
 					updateString += tempTyped[charInc];
-					setScore(15);
+					adjustScore(15);
 					charInc++;
 				
 				}
-				setScore(-5);
+				adjustScore(-5);
 				//Render.updateHealth();
 			}
 		}catch(Exception err){
@@ -458,7 +459,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER ||
 				e.getKeyCode() == KeyEvent.VK_SHIFT){
-			setScore(5);
+			adjustScore(5);
 		}
 	}
 	

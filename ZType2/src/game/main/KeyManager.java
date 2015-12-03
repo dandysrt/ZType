@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 
 public class KeyManager implements KeyListener {
 
-	public static boolean lastPangram = false;
+	public static volatile boolean lastPangram = false;
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
