@@ -6,6 +6,7 @@ import java.util.Random;
 
 import game.main.*;
 import game.main.graphics.ImageManager;
+import game.main.graphics.InitAnimator;
 import game.main.graphics.Render;
 
 public class Zombie {
@@ -15,6 +16,7 @@ public class Zombie {
 	protected boolean visible = true;
 	
 	public Zombie(ImageManager iM, int xVal){
+		InitAnimator.fullRun = false;
 		x = xVal;
 		this.iM = iM;
 	}

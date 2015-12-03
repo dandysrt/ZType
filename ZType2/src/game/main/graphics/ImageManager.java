@@ -34,26 +34,18 @@ public class ImageManager
 		
 		undead.add(ss.cropPlayer(0, 0, eW, eH));
 		undead.add(ss.cropPlayer(0, 0, eW, eH));
-		undead.add(ss.cropPlayer(0, 0, eW, eH));
-		undead.add(ss.cropPlayer(1, 0, eW, eH));
 		undead.add(ss.cropPlayer(1, 0, eW, eH));
 		undead.add(ss.cropPlayer(1, 0, eW, eH));
 		undead.add(ss.cropPlayer(2, 0, eW, eH));
 		undead.add(ss.cropPlayer(2, 0, eW, eH));
-		undead.add(ss.cropPlayer(2, 0, eW, eH));
-		undead.add(ss.cropPlayer(3, 0, eW, eH));
 		undead.add(ss.cropPlayer(3, 0, eW, eH));
 		undead.add(ss.cropPlayer(3, 0, eW, eH));
 		undead.add(ss.cropPlayer(4, 0, eW, eH));
 		undead.add(ss.cropPlayer(4, 0, eW, eH));
-		undead.add(ss.cropPlayer(4, 0, eW, eH));
-		undead.add(ss.cropPlayer(5, 0, eW, eH));
 		undead.add(ss.cropPlayer(5, 0, eW, eH));
 		undead.add(ss.cropPlayer(5, 0, eW, eH));
 		undead.add(ss.cropPlayer(0, 1, eW, eH));
 		undead.add(ss.cropPlayer(0, 1, eW, eH));
-		undead.add(ss.cropPlayer(0, 1, eW, eH));
-		undead.add(ss.cropPlayer(1, 1, eW, eH));
 		undead.add(ss.cropPlayer(1, 1, eW, eH));
 		undead.add(ss.cropPlayer(1, 1, eW, eH));
 		

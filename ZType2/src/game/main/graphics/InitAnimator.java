@@ -7,16 +7,16 @@ public class InitAnimator {
 	private ArrayList<BufferedImage> frames;
 
 	public BufferedImage sprite;
-	public static boolean fullRun = false;
+	public volatile static boolean fullRun = false;
 	private volatile boolean running = false;
 	private long prevTime, speed;
-	private int frameAtPause, currentFrame = 0;
+	private volatile static int frameAtPause, currentFrame;
 
 	public InitAnimator(ArrayList<BufferedImage> frames)
 	{
+		fullRun = false;
 		this.frames = frames;
 		currentFrame = 0;
-		fullRun = false;
 	}
 
 	public void setSpeed(long speed)
@@ -37,7 +37,8 @@ public class InitAnimator {
 				} catch (IndexOutOfBoundsException e)
 				{
 					fullRun = true;
-					currentFrame = -1;
+					currentFrame = 0;
+					sprite = frames.get(currentFrame);
 				}
 				prevTime = time;
 			}

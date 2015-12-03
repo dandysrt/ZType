@@ -294,7 +294,8 @@ public class Game extends Canvas implements Runnable{
 	public void tick(){
 		Render.updateBackground(fground);
 		Render.updateBackground(bground);
-		Render.updateZombies(zombies);
+		if(zombies != null)
+			Render.updateZombies(zombies);
 		if(undead != null)
 			Render.updateUndead(undead);
 		
@@ -572,6 +573,7 @@ public class Game extends Canvas implements Runnable{
 			if(complete){
 				int wordsPM = (int) wpm;
 				zombies.clear();
+				undead.clear();
 				GameManager.doneScreen.setFont(chillerFont);
 				
 				GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
