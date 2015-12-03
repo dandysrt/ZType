@@ -10,7 +10,7 @@
 ## How do I get set up? ##
 
 * ZType is an Eclipse IDE project. Eclipse has version control capabilities so one can simply clone project right into eclipse. Alternatively the project can be cloned into a directory on the computer and imported into Eclipse as an existing project.
-* Executable jar files will be store in the out folder.
+* Executable jar files will soon be stored in an out folder.
 
 ## Contributors ##
 
