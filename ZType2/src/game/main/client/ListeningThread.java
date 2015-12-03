@@ -19,7 +19,7 @@ public class ListeningThread implements Runnable {
 	@Override
 	public void run() {
 		//client code
-		while(true){
+		while(Game.multiplayer){
 			try{
 				String[] info = input.readUTF().split(";");		
 				int player = Integer.parseInt(info[0]);
@@ -30,7 +30,7 @@ public class ListeningThread implements Runnable {
 				game.updateScores(player, score);
 				game.updatePlayerCount(pCount);
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		

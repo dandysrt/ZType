@@ -34,6 +34,7 @@ public class GameManager extends JFrame implements ActionListener{
 	protected static MenuScreen menu;
 	private JButton playButton;
 	private JButton restartButton;
+	private JButton reconnectButton;
 	private BufferedImage play;
 	private BufferedImage mousedOver;
 	private boolean start = true;
@@ -85,6 +86,7 @@ public class GameManager extends JFrame implements ActionListener{
 				playButton.setIcon(new ImageIcon(play));
 			}
 		});
+		
 		
 		
 		donePane = new JPanel();

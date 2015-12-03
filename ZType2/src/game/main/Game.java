@@ -75,6 +75,7 @@ public class Game extends Canvas implements Runnable{
 	protected static int score = 0;
 	public static int plyrSpeed = 100;
 	protected static boolean render = true;
+	public static volatile boolean multiplayer = true;
 	
 	public static ArrayList<Zombie> zombies;
 	public static ArrayList<Undead> undead;
@@ -124,7 +125,7 @@ public class Game extends Canvas implements Runnable{
 	
 	protected static BufferedImage background;
 	private static BufferedImage ground;
-	public static Font chillerFont;
+	public static Font chillerFont, chillerSmall;
 	
 	Random rand = new Random();
 	
@@ -201,14 +202,19 @@ public class Game extends Canvas implements Runnable{
 		
 		//client code
 		try {
-		      connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
-		      //connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
-		      input = new DataInputStream(connection.getInputStream());
-		      output = new DataOutputStream(connection.getOutputStream());
-		      setPlayerId(input.readInt());
-		      playerCount = input.readInt();
+
+			if(multiplayer){
+		      	connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
+		      	//connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
+		      	input = new DataInputStream(connection.getInputStream());
+		      	output = new DataOutputStream(connection.getOutputStream());
+		      	setPlayerId(input.readInt());
+		      	playerCount = input.readInt();
+			}
+		      
 		}catch ( IOException e ) {
-		     e.printStackTrace();         
+		     //e.printStackTrace();
+			multiplayer = false;   
 		}
 		ListeningThread listeningThread = new ListeningThread(this);
 		lThread = new Thread(listeningThread);
@@ -229,6 +235,7 @@ public class Game extends Canvas implements Runnable{
 			fontFile = new BufferedInputStream(new FileInputStream("fontRes/CHILLER.TTF"));
 			chillerFont = Font.createFont(Font.TRUETYPE_FONT,fontFile);
 			chillerFont = chillerFont.deriveFont(Font.ITALIC, 45);
+			chillerSmall = chillerFont.deriveFont(Font.ITALIC, 12);
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			ge.registerFont(chillerFont);
 		} catch (MalformedURLException e) {
@@ -362,6 +369,11 @@ public class Game extends Canvas implements Runnable{
 		g.setPaint(Color.white);
 		g.drawString(updateString, 80, 60);
 		
+		if(!multiplayer){
+			g.setFont(chillerSmall);
+			g.drawString("D I S C O N N E C T E D", 15, 550);
+		}
+		
 		zIM.zombie.setSpeed(200);
 		uIM.deadRise.setSpeed(400);
 		
@@ -419,7 +431,8 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void setPangram(){
 		drawnString = getPangram();
-		sendScore();
+		if(multiplayer)
+			sendScore();
 	}
 	
 	public static void reset(){
