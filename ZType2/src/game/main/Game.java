@@ -414,7 +414,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void setPangram(){
 		drawnString = getPangram();
-		sendScore();
+		sendScore(false);
 	}
 	
 	public static void reset(){
@@ -523,10 +523,14 @@ public class Game extends Canvas implements Runnable{
 		playerCount = pCount;
 	}
 
-	public static void sendScore(){		
+public static void sendScore(boolean done){		
 		
 		try{
-			output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
+			if(!done){
+				output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
+			}else{
+				output.writeUTF(getPlayerId() + ";" + "done" + ";" +  score);
+			}
 		}catch(IOException e){
 			
 		}
@@ -571,13 +575,9 @@ public class Game extends Canvas implements Runnable{
 				pause();
 			}
 			if(complete){
-				int wordsPM = (int) wpm;
+				
 				zombies.clear();
 				undead.clear();
-				GameManager.doneScreen.setFont(chillerFont);
-				
-				GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
-				GameManager.donePane.setVisible(true);
 				//break;
 				complete = false;
 			}
@@ -586,6 +586,16 @@ public class Game extends Canvas implements Runnable{
 		phi = 0.0;
 		wordCount = 0;
 		
+	}
+	
+	public static void renderFinal(String message){
+		int wordsPM = (int) wpm;
+		String[] s = message.split(";");
+		GameManager.doneScreen.setFont(chillerFont);
+		GameManager.doneScreen.append("You got " + s[0] + "\n");
+		GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
+
+		GameManager.donePane.setVisible(true);
 	}
 
 	public static int getPlayerId() {
