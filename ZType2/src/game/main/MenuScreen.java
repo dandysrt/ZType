@@ -42,6 +42,7 @@ public class MenuScreen extends Canvas implements Runnable{
 		MenuScreen.HEIGHT = HEIGHT;
 		MenuScreen.SCALE = SCALE;
 		MenuScreen.TILESIZE = TILESIZE;
+
 	}
 	
 	public void init(){
@@ -126,7 +127,7 @@ public class MenuScreen extends Canvas implements Runnable{
 	public void run() {
 		init();
 		while(running){
-			render();
+			render();	
 		}
 		
 	}

@@ -213,7 +213,6 @@ public class Game extends Canvas implements Runnable{
 			}
 		      
 		}catch ( IOException e ) {
-		     //e.printStackTrace();
 			multiplayer = false;   
 		}
 		ListeningThread listeningThread = new ListeningThread(this);
@@ -287,6 +286,7 @@ public class Game extends Canvas implements Runnable{
 		{
 			e.printStackTrace();
 		}
+
 	}
 	
 	public synchronized void pause(){
@@ -599,6 +599,7 @@ public class Game extends Canvas implements Runnable{
 				complete = false;
 				zombies.clear();
 			}
+			
 			
 		}
 		phi = 0.0;
