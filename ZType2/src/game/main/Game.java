@@ -39,10 +39,10 @@ public class Game extends Canvas implements Runnable{
 
 	private static final long serialVersionUID = 1L;
 	public static int WIDTH, HEIGHT, SCALE, TILESIZE;
-	public static boolean running = false;
-	public static boolean pause = false;
-	public static boolean complete = false;
-	public static boolean endGame = false;
+	public static volatile boolean running = false;
+	public static volatile boolean pause = false;
+	public static volatile boolean complete = false;
+	public static volatile boolean endGame = false;
 	
 	public static int wordCount = 0;
 	public static double wpm = 0;
@@ -577,15 +577,13 @@ public class Game extends Canvas implements Runnable{
 				pause();
 			}
 			if(complete){
-				int wordsPM = (int) wpm;
-				zombies.clear();
 				undead.clear();
+				int wordsPM = (int) wpm;
 				GameManager.doneScreen.setFont(chillerFont);
-				
 				GameManager.doneScreen.setText("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
 				GameManager.donePane.setVisible(true);
-				//break;
 				complete = false;
+				zombies.clear();
 			}
 			
 		}
