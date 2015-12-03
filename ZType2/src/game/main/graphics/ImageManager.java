@@ -8,11 +8,11 @@ public class ImageManager
 	public BufferedImage grass, razorL, razorM, razorR, rHandle, invis, bldg1, bldg2, bldg3;
 	
 	public ArrayList<BufferedImage> undead = new ArrayList<BufferedImage>();
-	public InitAnimator deadRise = new InitAnimator(undead);
+	public volatile InitAnimator deadRise = new InitAnimator(undead);
 	public ArrayList<BufferedImage> plyr = new ArrayList<BufferedImage>();
-	public Animator player = new Animator(plyr);
+	public volatile Animator player = new Animator(plyr);
 	public ArrayList<BufferedImage> zomB = new ArrayList<BufferedImage>();
-	public Animator zombie = new Animator(zomB);
+	public volatile Animator zombie = new Animator(zomB);
 	
 	public int eW = 55, eH = 65;
 	

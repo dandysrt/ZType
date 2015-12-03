@@ -9,6 +9,7 @@ public class HealthBar
 	private static int x = 500, y = 100;
 	private static int w = 100, h = 20;
 	private static int count = 0;
+	public static volatile boolean hittable = true;
 	
 	public HealthBar(){
 		
@@ -16,6 +17,10 @@ public class HealthBar
 	
 	public int getX(){
 		return x;
+	}
+	
+	public static void resetW(){
+		w = 100;
 	}
 	
 	public int getY(){
@@ -31,9 +36,13 @@ public class HealthBar
 	}
 	
 	public static void updateW(int val){
+		if(hittable){
+			w += val;
+			hittable = false;
+		}
 		count++;
 		if(count > 500){
-			w += val;
+			hittable = true;
 			count = 0;
 		}
 		if(w <= 0){
@@ -41,7 +50,7 @@ public class HealthBar
 			Game.zombies.clear();
 			Game.reset();
 			GameManager.doneScreen.setFont(Game.chillerFont);
-			GameManager.doneScreen.append("    You Died. \n    Type faster!");
+			GameManager.doneScreen.setText("    You Died. \n    Type faster!");
 			GameManager.donePane.setVisible(true);
 			
 		}

@@ -10,7 +10,7 @@ public class InitAnimator {
 	public volatile static boolean fullRun = false;
 	private volatile boolean running = false;
 	private long prevTime, speed;
-	private volatile static int frameAtPause, currentFrame;
+	private volatile int frameAtPause, currentFrame;
 
 	public InitAnimator(ArrayList<BufferedImage> frames)
 	{

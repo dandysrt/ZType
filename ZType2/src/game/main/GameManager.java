@@ -97,6 +97,7 @@ public class GameManager extends JFrame implements ActionListener{
 		donePane.add(doneScreen);
 		doneScreen.setBounds(0, 0, 300, 149);
 		doneScreen.setBackground(Color.BLACK);
+		doneScreen.setSelectedTextColor(Color.RED);
 		doneScreen.setEditable(false);
 		
 		restartButton = new JButton("RESTART");

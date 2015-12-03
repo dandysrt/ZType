@@ -25,6 +25,7 @@ import game.main.entities.Zombie;
 import game.main.KeyManager;
 import game.main.client.ListeningThread;
 import game.main.graphics.Background;
+import game.main.graphics.HealthBar;
 import game.main.graphics.ImageManager;
 import game.main.graphics.PlayerProgressBar;
 import game.main.graphics.Render;
@@ -157,6 +158,8 @@ public class Game extends Canvas implements Runnable{
 		scores = new int[4];
 		lastscores = new int[4];
 		//end client code
+
+		HealthBar.resetW();
 		
 		zombies = new ArrayList<Zombie>();
 		undead = new ArrayList<Undead>();
@@ -180,6 +183,9 @@ public class Game extends Canvas implements Runnable{
 		player = new Player (600, 350, eIM);
 		
 		eIM.player.start();
+
+
+		eIM.player.setSpeed(plyrSpeed);
 		zIM.zombie.start();
 		uIM.deadRise.start();
 		
@@ -318,11 +324,11 @@ public class Game extends Canvas implements Runnable{
 		if(bground != null){
 			Render.renderBackground(g, bground);
 		}
-		if (eIM.player != null)
-		{
+		/*if (eIM.player != null)
+		{*/
 			eIM.player.update(System.currentTimeMillis());
 			player.render(g);
-		}
+		/*}*/
 		if(zIM.zombie != null){
 			zIM.zombie.update(System.currentTimeMillis());
 			Render.renderZombies(g, zombies);
@@ -355,8 +361,7 @@ public class Game extends Canvas implements Runnable{
 		g.setFont(chillerFont);
 		g.setPaint(Color.white);
 		g.drawString(updateString, 80, 60);
-
-		eIM.player.setSpeed(plyrSpeed);
+		
 		zIM.zombie.setSpeed(200);
 		uIM.deadRise.setSpeed(400);
 		
@@ -426,6 +431,7 @@ public class Game extends Canvas implements Runnable{
 		complete = false;
 		playerStart = false;
 		KeyManager.lastPangram = false;
+		HealthBar.hittable = true;
 	}
 
 	public static void compareString(KeyEvent e){
@@ -457,7 +463,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public static void speedUp(){
-		if(plyrSpeed > 50){
+		if(plyrSpeed > 70){
 			plyrSpeed -= 10;
 			Background.adjustSpeed(.1);
 		}
@@ -576,7 +582,7 @@ public class Game extends Canvas implements Runnable{
 				undead.clear();
 				GameManager.doneScreen.setFont(chillerFont);
 				
-				GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
+				GameManager.doneScreen.setText("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
 				GameManager.donePane.setVisible(true);
 				//break;
 				complete = false;

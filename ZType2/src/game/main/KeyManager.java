@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 
 public class KeyManager implements KeyListener {
-	private int count = 0;
+
 	public static boolean lastPangram = false;
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -30,11 +30,6 @@ public class KeyManager implements KeyListener {
 					Game.wordInc++;
 					Game.charInc = 0;
 					Game.updateString += " ";
-					count++;
-					if(count < 3){
-						Game.speedUp();
-						count = 0;
-					}
 				}
 				
 				Game.wordCount++;
