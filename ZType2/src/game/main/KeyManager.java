@@ -42,7 +42,7 @@ public class KeyManager implements KeyListener {
 		}
 		Game.playerStart = true;
 		Game.compareString(e);
-		if(Game.score >= 100)
+		if(Game.score >= 5000)
 			lastPangram = true;
 	}
 
