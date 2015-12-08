@@ -123,7 +123,7 @@ public class Server extends JFrame{
 	public static void updatePlayerCount(int n){
 		playerCount = playerCount + n;
 	}
-	public void finished(String message){
+	public void finished(DataOutputStream out,String message){
 		scores.add(message);
 		switch(scores.size() - 1){
 		case 0:
@@ -144,7 +144,7 @@ public class Server extends JFrame{
 			message += s[0] + ";" + s[2] + ";";
 		}
 		try {
-			output.writeUTF(message);
+			out.writeUTF(message);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

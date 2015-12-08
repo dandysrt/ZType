@@ -25,11 +25,13 @@ public class PlayerThread extends Thread{
 			try{
 				server.printMessage("Player " + playerId + " is listening...");
 				String message = input.readUTF();
-				server.sendPlayerData(playerId,message);
-				server.printMessage(message);
+				
 				if(message.split(";")[1].compareTo("done") == 0){
 					message = input.readUTF();
-					server.finished(message);
+					server.finished(output,message);
+				}else{
+					server.sendPlayerData(playerId,message);
+					server.printMessage(message);
 				}
 			}catch(IOException|NullPointerException e){
 				output = null;

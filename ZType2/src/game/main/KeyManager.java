@@ -13,7 +13,6 @@ public class KeyManager implements KeyListener {
 			if(lastPangram){
 				Game.sendScore(true);
 				Game.complete = true;
-				
 				return;
 			}
 			Game.setPangram();
@@ -43,7 +42,7 @@ public class KeyManager implements KeyListener {
 		}
 		Game.playerStart = true;
 		Game.compareString(e);
-		if(Game.score >= 5000)
+		if(Game.score >= 100)
 			lastPangram = true;
 	}
 
