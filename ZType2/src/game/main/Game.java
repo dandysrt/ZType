@@ -204,8 +204,8 @@ public class Game extends Canvas implements Runnable{
 		try {
 
 			if(multiplayer){
-		      	connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
-		      	//connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
+//		      	connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
+		      	connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
 		      	input = new DataInputStream(connection.getInputStream());
 		      	output = new DataOutputStream(connection.getOutputStream());
 		      	setPlayerId(input.readInt());
