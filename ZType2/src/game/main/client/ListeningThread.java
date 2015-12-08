@@ -19,24 +19,18 @@ public class ListeningThread implements Runnable {
 	@Override
 	public void run() {
 		//client code
-		while(true){
+		while(Game.multiplayer){
 			try{
-				String s = input.readUTF();
-				String[] info = s.split(";");		
-				if(info[1].compareTo("message") == 0){
-					int player = Integer.parseInt(info[0]);
-					String message = info[1];
-					int score = Integer.parseInt(info[2]);
-					int pCount = Integer.parseInt(info[3]);
-					System.out.println("<" + game.getPlayerId() + ">" + "Player:" + player + "Score:" + score);
-					game.updateScores(player, score);
-					game.updatePlayerCount(pCount);
-				}else{
-					System.out.println("Test");
-					game.renderFinal(s);
-				}
+				String[] info = input.readUTF().split(";");		
+				int player = Integer.parseInt(info[0]);
+				String message = info[1];
+				int score = Integer.parseInt(info[2]);
+				int pCount = Integer.parseInt(info[3]);
+				System.out.println("<" + game.getPlayerId() + ">" + "Player:" + player + "Score:" + score);
+				game.updateScores(player, score);
+				game.updatePlayerCount(pCount);
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		

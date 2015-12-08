@@ -5,13 +5,12 @@ import java.awt.event.KeyListener;
 
 
 public class KeyManager implements KeyListener {
-	private int count = 0;
-	public static boolean lastPangram = false;
+
+	public static volatile boolean lastPangram = false;
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
 			if(lastPangram){
-				Game.sendScore(true);
 				Game.complete = true;
 				return;
 			}
@@ -20,7 +19,6 @@ public class KeyManager implements KeyListener {
 			Game.charInc = 0;
 			Game.updateString = "";
 			Game.wordCount++;
-			//System.out.println((int) Game.wpm); 
 		}
 		if(e.getKeyCode() == KeyEvent.VK_SPACE){
 			
@@ -31,11 +29,6 @@ public class KeyManager implements KeyListener {
 					Game.wordInc++;
 					Game.charInc = 0;
 					Game.updateString += " ";
-					count++;
-					if(count < 3){
-						Game.speedUp();
-						count = 0;
-					}
 				}
 				
 				Game.wordCount++;

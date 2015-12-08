@@ -10,7 +10,7 @@ import game.main.graphics.InitAnimator;
 import game.main.graphics.Render;
 
 public class Zombie {
-	private int x, y = 350;
+	private int x, y = 355;
 	private ImageManager iM;
 	
 	protected boolean visible = true;
@@ -47,8 +47,9 @@ public class Zombie {
 			Game.zombies.clear();
 		}
 		
-		if(zombieTouch())
+		if(zombieTouch()){
 			Render.updateHealth();
+		}
 	}
 	
 	public Rectangle getBounds(){

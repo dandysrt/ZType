@@ -25,6 +25,7 @@ import game.main.entities.Zombie;
 import game.main.KeyManager;
 import game.main.client.ListeningThread;
 import game.main.graphics.Background;
+import game.main.graphics.HealthBar;
 import game.main.graphics.ImageManager;
 import game.main.graphics.PlayerProgressBar;
 import game.main.graphics.Render;
@@ -38,10 +39,10 @@ public class Game extends Canvas implements Runnable{
 
 	private static final long serialVersionUID = 1L;
 	public static int WIDTH, HEIGHT, SCALE, TILESIZE;
-	public static boolean running = false;
-	public static boolean pause = false;
-	public static boolean complete = false;
-	public static boolean endGame = false;
+	public static volatile boolean running = false;
+	public static volatile boolean pause = false;
+	public static volatile boolean complete = false;
+	public static volatile boolean endGame = false;
 	
 	public static int wordCount = 0;
 	public static double wpm = 0;
@@ -57,7 +58,7 @@ public class Game extends Canvas implements Runnable{
 	public static ImageManager uIM;
 	public static ImageManager zIM;
 	
-	protected static boolean playerStart = false;
+	protected static volatile boolean playerStart = false;
 	
 	//player entity
 	private static Player player;
@@ -74,6 +75,7 @@ public class Game extends Canvas implements Runnable{
 	protected static int score = 0;
 	public static int plyrSpeed = 100;
 	protected static boolean render = true;
+	public static volatile boolean multiplayer = true;
 	
 	public static ArrayList<Zombie> zombies;
 	public static ArrayList<Undead> undead;
@@ -123,7 +125,7 @@ public class Game extends Canvas implements Runnable{
 	
 	protected static BufferedImage background;
 	private static BufferedImage ground;
-	public static Font chillerFont;
+	public static Font chillerFont, chillerSmall;
 	
 	Random rand = new Random();
 	
@@ -157,6 +159,8 @@ public class Game extends Canvas implements Runnable{
 		scores = new int[4];
 		lastscores = new int[4];
 		//end client code
+
+		HealthBar.resetW();
 		
 		zombies = new ArrayList<Zombie>();
 		undead = new ArrayList<Undead>();
@@ -180,6 +184,9 @@ public class Game extends Canvas implements Runnable{
 		player = new Player (600, 350, eIM);
 		
 		eIM.player.start();
+
+
+		eIM.player.setSpeed(plyrSpeed);
 		zIM.zombie.start();
 		uIM.deadRise.start();
 		
@@ -195,14 +202,18 @@ public class Game extends Canvas implements Runnable{
 		
 		//client code
 		try {
-		      connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
-		      //connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
-		      input = new DataInputStream(connection.getInputStream());
-		      output = new DataOutputStream(connection.getOutputStream());
-		      setPlayerId(input.readInt());
-		      playerCount = input.readInt();
+
+			if(multiplayer){
+		      	connection = new Socket(InetAddress.getByName( "127.0.0.1" ), 5000 );
+		      	//connection = new Socket(InetAddress.getByName( "131.230.166.154" ), 5000 );
+		      	input = new DataInputStream(connection.getInputStream());
+		      	output = new DataOutputStream(connection.getOutputStream());
+		      	setPlayerId(input.readInt());
+		      	playerCount = input.readInt();
+			}
+		      
 		}catch ( IOException e ) {
-		     e.printStackTrace();         
+			multiplayer = false;   
 		}
 		ListeningThread listeningThread = new ListeningThread(this);
 		lThread = new Thread(listeningThread);
@@ -223,6 +234,7 @@ public class Game extends Canvas implements Runnable{
 			fontFile = new BufferedInputStream(new FileInputStream("fontRes/CHILLER.TTF"));
 			chillerFont = Font.createFont(Font.TRUETYPE_FONT,fontFile);
 			chillerFont = chillerFont.deriveFont(Font.ITALIC, 45);
+			chillerSmall = chillerFont.deriveFont(Font.ITALIC, 12);
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			ge.registerFont(chillerFont);
 		} catch (MalformedURLException e) {
@@ -274,6 +286,7 @@ public class Game extends Canvas implements Runnable{
 		{
 			e.printStackTrace();
 		}
+
 	}
 	
 	public synchronized void pause(){
@@ -287,7 +300,7 @@ public class Game extends Canvas implements Runnable{
 	 * Increment or decrement score
 	 * @param value set as negative to decrement, positive to increment
 	 */
-	public static void setScore(int value){
+	public static void adjustScore(int value){
 		score = score + value;
 	}
 	
@@ -318,11 +331,11 @@ public class Game extends Canvas implements Runnable{
 		if(bground != null){
 			Render.renderBackground(g, bground);
 		}
-		if (eIM.player != null)
-		{
+		/*if (eIM.player != null)
+		{*/
 			eIM.player.update(System.currentTimeMillis());
 			player.render(g);
-		}
+		/*}*/
 		if(zIM.zombie != null){
 			zIM.zombie.update(System.currentTimeMillis());
 			Render.renderZombies(g, zombies);
@@ -355,8 +368,12 @@ public class Game extends Canvas implements Runnable{
 		g.setFont(chillerFont);
 		g.setPaint(Color.white);
 		g.drawString(updateString, 80, 60);
-
-		eIM.player.setSpeed(plyrSpeed);
+		
+		if(!multiplayer){
+			g.setFont(chillerSmall);
+			g.drawString("D I S C O N N E C T E D", 15, 550);
+		}
+		
 		zIM.zombie.setSpeed(200);
 		uIM.deadRise.setSpeed(400);
 		
@@ -414,7 +431,8 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void setPangram(){
 		drawnString = getPangram();
-		sendScore(false);
+		if(multiplayer)
+			sendScore();
 	}
 	
 	public static void reset(){
@@ -425,7 +443,9 @@ public class Game extends Canvas implements Runnable{
 		updateString = "";
 		complete = false;
 		playerStart = false;
+		plyrSpeed = 100;
 		KeyManager.lastPangram = false;
+		HealthBar.hittable = true;
 	}
 
 	public static void compareString(KeyEvent e){
@@ -440,11 +460,11 @@ public class Game extends Canvas implements Runnable{
 				if(e.getKeyChar() == tempArray[charInc]){
 					tempTyped[charInc] = tempArray[charInc];
 					updateString += tempTyped[charInc];
-					setScore(15);
+					adjustScore(15);
 					charInc++;
 				
 				}
-				setScore(-5);
+				adjustScore(-5);
 				//Render.updateHealth();
 			}
 		}catch(Exception err){
@@ -452,12 +472,12 @@ public class Game extends Canvas implements Runnable{
 		}
 		if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER ||
 				e.getKeyCode() == KeyEvent.VK_SHIFT){
-			setScore(5);
+			adjustScore(5);
 		}
 	}
 	
 	public static void speedUp(){
-		if(plyrSpeed > 50){
+		if(plyrSpeed > 70){
 			plyrSpeed -= 10;
 			Background.adjustSpeed(.1);
 		}
@@ -523,14 +543,10 @@ public class Game extends Canvas implements Runnable{
 		playerCount = pCount;
 	}
 
-public static void sendScore(boolean done){		
+	public static void sendScore(){		
 		
 		try{
-			if(!done){
-				output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
-			}else{
-				output.writeUTF(getPlayerId() + ";" + "done" + ";" +  score);
-			}
+			output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
 		}catch(IOException e){
 			
 		}
@@ -575,27 +591,20 @@ public static void sendScore(boolean done){
 				pause();
 			}
 			if(complete){
-				
-				zombies.clear();
 				undead.clear();
-				//break;
+				int wordsPM = (int) wpm;
+				GameManager.doneScreen.setFont(chillerFont);
+				GameManager.doneScreen.setText("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
+				GameManager.donePane.setVisible(true);
 				complete = false;
+				zombies.clear();
 			}
+			
 			
 		}
 		phi = 0.0;
 		wordCount = 0;
 		
-	}
-	
-	public static void renderFinal(String message){
-		int wordsPM = (int) wpm;
-		String[] s = message.split(";");
-		GameManager.doneScreen.setFont(chillerFont);
-		GameManager.doneScreen.append("You got " + s[0] + "\n");
-		GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
-
-		GameManager.donePane.setVisible(true);
 	}
 
 	public static int getPlayerId() {

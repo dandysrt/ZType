@@ -10,9 +10,9 @@ public class ImageManager
 	public ArrayList<BufferedImage> undead = new ArrayList<BufferedImage>();
 	public InitAnimator deadRise = new InitAnimator(undead);
 	public ArrayList<BufferedImage> plyr = new ArrayList<BufferedImage>();
-	public Animator player = new Animator(plyr);
+	public volatile Animator player = new Animator(plyr);
 	public ArrayList<BufferedImage> zomB = new ArrayList<BufferedImage>();
-	public Animator zombie = new Animator(zomB);
+	public volatile Animator zombie = new Animator(zomB);
 	
 	public int eW = 55, eH = 65;
 	

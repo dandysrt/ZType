@@ -34,6 +34,7 @@ public class GameManager extends JFrame implements ActionListener{
 	protected static MenuScreen menu;
 	private JButton playButton;
 	private JButton restartButton;
+	protected static JButton reconnectButton;
 	private BufferedImage play;
 	private BufferedImage mousedOver;
 	private boolean start = true;
@@ -45,6 +46,7 @@ public class GameManager extends JFrame implements ActionListener{
 		setSize(WIDTH * SCALE, HEIGHT * SCALE);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		requestFocus(true);
 		
 		contentPane = new JPanel();
 		contentPane.setLayout(new CardLayout());	
@@ -86,6 +88,13 @@ public class GameManager extends JFrame implements ActionListener{
 			}
 		});
 		
+		reconnectButton = new JButton("Multiplayer");
+		reconnectButton.setBounds(1050, 500, 125, 50);
+		menuPane.add(reconnectButton);
+		reconnectButton.addActionListener(this);
+		reconnectButton.setVisible(true);
+		
+				
 		
 		donePane = new JPanel();
 		gamePane.add(donePane);
@@ -97,6 +106,7 @@ public class GameManager extends JFrame implements ActionListener{
 		donePane.add(doneScreen);
 		doneScreen.setBounds(0, 0, 300, 149);
 		doneScreen.setBackground(Color.BLACK);
+		doneScreen.setSelectedTextColor(Color.RED);
 		doneScreen.setEditable(false);
 		
 		restartButton = new JButton("RESTART");
@@ -138,6 +148,7 @@ public class GameManager extends JFrame implements ActionListener{
 			game.setMinimumSize(new Dimension (WIDTH * SCALE, HEIGHT * SCALE));
 			game.setBounds(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 			gamePane.add(game);
+			gamePane.requestFocus(true);
 			game.start();
 		}
 		
@@ -149,6 +160,10 @@ public class GameManager extends JFrame implements ActionListener{
 			menu.start();
 			Game.reset();
 			gamePane.remove(game);
+		}
+		
+		if(action == reconnectButton){
+			Game.multiplayer = true;
 		}
 	}
 	

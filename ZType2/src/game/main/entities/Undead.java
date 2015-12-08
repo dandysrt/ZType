@@ -27,8 +27,8 @@ public class Undead {
 	public void tick(){
 		if(iM.deadRise.fullRun){
 			Game.zombies.add(new Zombie(Game.zIM, x));
-			Game.undead.remove(0);
 			iM.deadRise.fullRun = false;
+			Game.undead.remove(0);
 		}
 		x -= 1;
 		if(x < -100){
