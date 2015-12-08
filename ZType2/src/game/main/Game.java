@@ -432,7 +432,7 @@ public class Game extends Canvas implements Runnable{
 	public static void setPangram(){
 		drawnString = getPangram();
 		if(multiplayer)
-			sendScore();
+			sendScore(false);
 	}
 	
 	public static void reset(){
@@ -543,7 +543,7 @@ public class Game extends Canvas implements Runnable{
 		playerCount = pCount;
 	}
 
-	public static void sendScore(){		
+	public static void sendScore(boolean done){		
 		
 		try{
 			if(!done){
