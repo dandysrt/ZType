@@ -546,7 +546,11 @@ public class Game extends Canvas implements Runnable{
 	public static void sendScore(){		
 		
 		try{
-			output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
+			if(!done){
+				output.writeUTF(getPlayerId() + ";" + "message" + ";" +  score);
+			}else{
+				output.writeUTF(getPlayerId() + ";" + "done" + ";" +  score);
+			}
 		}catch(IOException e){
 			
 		}
@@ -592,10 +596,6 @@ public class Game extends Canvas implements Runnable{
 			}
 			if(complete){
 				undead.clear();
-				int wordsPM = (int) wpm;
-				GameManager.doneScreen.setFont(chillerFont);
-				GameManager.doneScreen.setText("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
-				GameManager.donePane.setVisible(true);
 				complete = false;
 				zombies.clear();
 			}
@@ -605,6 +605,15 @@ public class Game extends Canvas implements Runnable{
 		phi = 0.0;
 		wordCount = 0;
 		
+	}
+	
+	public static void renderFinal(String message){
+		int wordsPM = (int) wpm;
+		String[] s = message.split(";");
+		GameManager.doneScreen.setFont(chillerFont);
+		GameManager.doneScreen.append("You got " + s[0] + "\n");
+		GameManager.doneScreen.append("Score: "+score+"\nW.P.M: "+wordsPM/*+""<--Winner*/);
+		GameManager.donePane.setVisible(true);
 	}
 
 	public static int getPlayerId() {
